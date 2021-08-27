@@ -1,5 +1,7 @@
 const express = require('express');
 const expressWinston = require('express-winston');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 const winston = require('winston');
 const routes = require('./routes');
 const logger = require('./logger');
@@ -33,6 +35,9 @@ app.use(expressWinston.logger({
   colorize: true,
   ignoreRoute: () => false,
 }));
+
+const openAPIDocument = YAML.load('./openapi/openapi.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openAPIDocument));
 app.use(contextPath, routes);
 
 app.listen(port, () => {
